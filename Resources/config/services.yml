@@ -1,0 +1,8 @@
+parameters:
+
+services:
+    acilia.video_provider:
+        class: Acilia\Bundle\VideoProviderBundle\Service\VideoProviderService
+        arguments:
+            - @my_video_provider
+            - {user: %video_provider.user%, password: %video_provider.password%}
