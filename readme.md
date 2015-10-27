@@ -27,56 +27,26 @@ $ composer update aciliainternet/video-provider-bundle
 ```
 
 ## Configuration
-Add the following parameters to our parameters.yml:
+Add the following parameters to your parameters.yml:
 
 ```yaml
 # parameters.yml
 
-video_provider.user: account@provider.com
-video_provider.password: *****
+video_provider_bundle.user: account@provider.com
+video_provider_bundle.password: *****
 ```
 
-Config our video provider in services.yml:
+## Configuration (Optional)
+Configure video provider:
 
 ```yaml
-# services.yml
+# parameters.yml
 
-my_video_provider:
-    class: Our\Bundle\Path\VideoProvider\OurProviderApi
+video_provider_bundle.provider: ThePlatform
 ```
 
-Implements video provider bundle interface to our provider API:
-
-```php
-// Our/Bundle/Path/VideoProvider/OurProviderApi.php
-
-namespace Our\Bundle\Path\VideoProvider;
-
-use Acilia\Bundle\VideoProviderBundle\Library\Interfaces\ProviderInterface;
-
-class OurProviderApi implements ProviderInterface
-```
-
-Create the following interface methods in our provider API:
-
-```php
-// Our/Bundle/Path/VideoProvider/OurProviderApi.php
-
-class OurProviderApi implements ProviderInterface
-{
-    public static function getInstance();
-
-    public function setCredentials($credentials);
-
-    public function authenticate();
-
-    public function getVideosFromFeed($feedPublicId);
-
-    public function getVideoInfo($videoId);
-
-    // ...
-}
-```
+Allowed providers:
+- ThePlatform (Default)
 
 ## Usage
 
