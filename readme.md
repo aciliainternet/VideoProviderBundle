@@ -27,13 +27,16 @@ $ composer update aciliainternet/video-provider-bundle
 ```
 
 ## Configuration
-Add the following parameters to your parameters.yml:
+Add the initialize arguments of selected provider to your config.
+
+- **ThePlatform**:
 
 ```yaml
 # parameters.yml
 
-video_provider_bundle.user: account@provider.com
-video_provider_bundle.password: *****
+video_provider_bundle.provider_init_args:
+    user: provider_user
+    password: *****
 ```
 
 ## Configuration (Optional)
