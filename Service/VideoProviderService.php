@@ -4,6 +4,8 @@ namespace Acilia\Bundle\VideoProviderBundle\Service;
 
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderConnectionException;
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderInterfaceException;
+use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderMethodNotFoundException;
+use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderNotFoundProviderException;
 
 class VideoProviderService
 {
@@ -12,7 +14,7 @@ class VideoProviderService
      *
      * @var ProviderInterface
      */
-    private $api;
+    private $provider;
 
     /**
      * Video provider credentials.
@@ -24,19 +26,26 @@ class VideoProviderService
     /**
      * __construct.
      *
-     * @param ProviderInterface $api
-     * @param array             $credentials
+     * @param string $provider
+     * @param array  $credentials
      */
-    public function __construct($api, $credentials)
+    public function __construct($provider, $credentials)
     {
-        if (!in_array('Acilia\Bundle\VideoProviderBundle\Library\Interfaces\ProviderInterface', class_implements(get_class($api)))) {
+        $provider = 'Acilia\Bundle\VideoProviderBundle\Library\Providers\\'.$provider.'Provider';
+
+        if (!class_exists($provider)) {
+            throw new VideoProviderNotFoundProviderException('Provider "'.$provider.'" not found');
+        }
+
+        if (!in_array('Acilia\Bundle\VideoProviderBundle\Library\Interfaces\ProviderInterface', class_implements($provider))) {
             throw new VideoProviderInterfaceException('Interface "ProviderInterface" not implemented');
         }
 
+        $this->provider = call_user_func(array($provider, 'getInstance'));
+
         try {
-            $this->api = $api::getInstance();
-            $this->api->setCredentials($credentials);
-            $this->api->authenticate();
+            $this->provider->setCredentials($credentials);
+            $this->provider->authenticate();
         } catch (\Exception $e) {
             throw new VideoProviderConnectionException('Error connecting to video provider', 0, $e);
         }
@@ -52,11 +61,11 @@ class VideoProviderService
      */
     public function call($method, $arguments)
     {
-        if (!method_exists($this->api, $method)) {
+        if (!method_exists($this->provider, $method)) {
             throw new VideoProviderMethodNotFoundException('Method "'.$method.'" not found');
         }
 
-        return call_user_func_array(array($this->api, $method), $arguments);
+        return call_user_func_array(array($this->provider, $method), $arguments);
     }
 
     /**
@@ -68,7 +77,7 @@ class VideoProviderService
      */
     public function getVideoInfo($id)
     {
-        return $this->api->getVideoInfo($id);
+        return $this->provider->getVideoInfo($id);
     }
 
     /**
@@ -80,6 +89,6 @@ class VideoProviderService
      */
     public function getVideosFromFeed($feed)
     {
-        return $this->api->getVideosFromFeed($feed);
+        return $this->provider->getVideosFromFeed($feed);
     }
 }
