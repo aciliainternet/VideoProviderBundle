@@ -4,11 +4,7 @@ namespace Acilia\Bundle\VideoProviderBundle\Library\Interfaces;
 
 interface ProviderInterface
 {
-    public static function getInstance();
-
-    public function setCredentials($credentials);
-
-    public function authenticate();
+    public static function initialize();
 
     public function getVideosFromFeed($feedPublicId);
 

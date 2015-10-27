@@ -2,7 +2,7 @@
 
 namespace Acilia\Bundle\VideoProviderBundle\Service;
 
-use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderConnectionException;
+use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderInitializationException;
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderInterfaceException;
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderMethodNotFoundException;
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderNotFoundProviderException;
@@ -29,7 +29,7 @@ class VideoProviderService
      * @param string $provider
      * @param array  $credentials
      */
-    public function __construct($provider, $credentials)
+    public function __construct($provider, $args)
     {
         $provider = 'Acilia\Bundle\VideoProviderBundle\Library\Providers\\'.$provider.'Provider';
 
@@ -41,13 +41,10 @@ class VideoProviderService
             throw new VideoProviderInterfaceException('Interface "ProviderInterface" not implemented');
         }
 
-        $this->provider = call_user_func(array($provider, 'getInstance'));
-
         try {
-            $this->provider->setCredentials($credentials);
-            $this->provider->authenticate();
+            $this->provider = call_user_func(array($provider, 'initialize'), $args);
         } catch (\Exception $e) {
-            throw new VideoProviderConnectionException('Error connecting to video provider', 0, $e);
+            throw new VideoProviderInitializationException('Error connecting to video provider', 1, $e);
         }
     }
 

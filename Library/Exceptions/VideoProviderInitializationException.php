@@ -4,6 +4,6 @@ namespace Acilia\Bundle\VideoProviderBundle\Library\Exceptions;
 
 use Exception;
 
-class VideoProviderConnectionException extends Exception
+class VideoProviderInitializationException extends Exception
 {
 }

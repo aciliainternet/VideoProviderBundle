@@ -30,6 +30,27 @@ class ThePlatformProvider implements ProviderInterface
         return self::$_instance;
     }
 
+    /**
+     * Initialize provider.
+     *
+     * @param array $args
+     *
+     * @throws Exception
+     *
+     * @return ThePlatformProvider
+     */
+    public static function initialize($args = array())
+    {
+        if (empty($args['user']) || empty($args['password'])) {
+            throw new Exception('Bad credentials', 1);
+        }
+        $instance = self::getInstance();
+        $instance->setCredentials($args['user'], $args['password']);
+        $instance->authenticate();
+
+        return $instance;
+    }
+
     private function _request($url, $post = false, $options = array())
     {
         // Init Curl
@@ -88,10 +109,10 @@ class ThePlatformProvider implements ProviderInterface
         $this->setAccount($this->_accounts[$accountId]);
     }
 
-    public function setCredentials($credentials)
+    public function setCredentials($user, $password)
     {
-        $this->_user = $credentials['user'];
-        $this->_password = $credentials['password'];
+        $this->_user = $user;
+        $this->_password = $password;
     }
 
     public function authenticate()
