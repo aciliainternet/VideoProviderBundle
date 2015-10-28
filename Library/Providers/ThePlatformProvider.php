@@ -32,6 +32,14 @@ class ThePlatformProvider implements ProviderInterface
     }
 
     /**
+     * Destruct provider (logout if needed)
+     */
+    public function __destruct()
+    {
+        $this->signOut();
+    }
+
+    /**
      * Initialize provider.
      *
      * @param array $args
