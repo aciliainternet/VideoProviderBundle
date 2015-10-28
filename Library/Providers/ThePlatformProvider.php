@@ -1,8 +1,8 @@
 <?php
 namespace Acilia\Bundle\VideoProviderBundle\Library\Providers;
 
-use Exception;
 use Acilia\Bundle\VideoProviderBundle\Library\Interfaces\ProviderInterface;
+use Exception;
 
 class ThePlatformProvider implements ProviderInterface
 {
@@ -12,6 +12,8 @@ class ThePlatformProvider implements ProviderInterface
     private static $_instance = null;
 
     private $_auth = null;
+    private $_user;
+    private $_password;
     private $_account = null;
     private $_signedIn = false;
     private $_base = 'us';
@@ -37,16 +39,14 @@ class ThePlatformProvider implements ProviderInterface
      *
      * @return ThePlatformProvider
      */
-    public static function initialize($args = array())
+    public function initialize($args = array())
     {
         if (empty($args['user']) || empty($args['password'])) {
             throw new Exception('Bad credentials', 1);
         }
-        $instance = self::getInstance();
-        $instance->setCredentials($args['user'], $args['password']);
-        $instance->authenticate();
 
-        return $instance;
+        $this->setCredentials($args['user'], $args['password']);
+        $this->authenticate();
     }
 
     private function _request($url, $post = false, $options = array())
