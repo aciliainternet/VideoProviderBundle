@@ -1,4 +1,5 @@
 <?php
+
 namespace Acilia\Bundle\VideoProviderBundle\Library\Providers;
 
 use Acilia\Bundle\VideoProviderBundle\Library\Interfaces\ProviderInterface;
@@ -47,6 +48,22 @@ class ThePlatformProvider implements ProviderInterface
 
         $this->setCredentials($args['user'], $args['password']);
         $this->authenticate();
+    }
+
+    /**
+     * Configuration method.
+     *
+     * @param array $args
+     *
+     * @return mixed
+     */
+    public function configure($args)
+    {
+        if (empty($args['account'])) {
+            throw new Exception('Bad configuration arguments.', 1);
+        }
+
+        $this->setAccount($args['account']);
     }
 
     private function _request($url, $post = false, $options = array())
@@ -139,9 +156,9 @@ class ThePlatformProvider implements ProviderInterface
     public function getVideoInfo($id)
     {
         $token = $this->_auth['token'];
-        $url = 'http://data.media.' . $this->getBaseUrl() . '/media/data/Media/' . $id . '?'
-            . 'schema=1.4.0&form=json&'
-            . 'token=' . $token . '&account=' . $this->_account;
+        $url = 'http://data.media.'.$this->getBaseUrl().'/media/data/Media/'.$id.'?'
+            .'schema=1.4.0&form=json&'
+            .'token='.$token.'&account='.$this->_account;
 
         $response = $this->_request($url);
         $json = json_decode($response, true);
@@ -154,7 +171,7 @@ class ThePlatformProvider implements ProviderInterface
         $videos = [];
 
         $token = $this->_auth['token'];
-        $url = 'http://data.feed.' . $this->getBaseUrl() . '/feed/data/FeedConfig?'
+        $url = 'http://data.feed.'.$this->getBaseUrl().'/feed/data/FeedConfig?'
             .'byPid='.$feedPublicId.'&'
             .'schema=1.3.0&form=json&'
             .'token='.$token.'&account='.$this->_account;
@@ -174,5 +191,4 @@ class ThePlatformProvider implements ProviderInterface
 
         return $videos;
     }
-
 }
