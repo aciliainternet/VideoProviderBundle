@@ -1,11 +1,12 @@
 <?php
-
 namespace Acilia\Bundle\VideoProviderBundle\Service;
 
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderInitializationException;
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderInterfaceException;
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderNotFoundProviderException;
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderConfigurationException;
+use Acilia\Bundle\VideoProviderBundle\Library\Interfaces\ProviderInterface;
+use Exception;
 
 class VideoProviderService
 {
@@ -20,24 +21,23 @@ class VideoProviderService
      * __construct.
      *
      * @param string $provider
-     * @param array  $credentials
+     * @param $args
+     * @throws VideoProviderInitializationException
+     * @throws VideoProviderInterfaceException
+     * @throws VideoProviderNotFoundProviderException
      */
     public function __construct($provider, $args)
     {
         $provider = 'Acilia\Bundle\VideoProviderBundle\Library\Providers\\'.$provider.'Provider';
 
         if (!class_exists($provider)) {
-            throw new VideoProviderNotFoundProviderException('Provider "'.$provider.'" not found');
-        }
-
-        if (!in_array('Acilia\Bundle\VideoProviderBundle\Library\Interfaces\ProviderInterface', class_implements($provider))) {
-            throw new VideoProviderInterfaceException('Interface "ProviderInterface" not implemented');
+            throw new VideoProviderNotFoundProviderException(sprintf('Provider "%s" not found', $provider));
         }
 
         try {
             $this->provider = $provider::getInstance();
             $this->provider->initialize($args);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new VideoProviderInitializationException('Error connecting to video provider', 1, $e);
         }
     }
@@ -46,7 +46,7 @@ class VideoProviderService
      * Call provider configure method.
      *
      * @param array $args
-     *
+     * @throws VideoProviderConfigurationException
      * @return mixed
      */
     public function configure($args)

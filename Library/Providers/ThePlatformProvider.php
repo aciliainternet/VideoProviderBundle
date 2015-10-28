@@ -17,7 +17,7 @@ class ThePlatformProvider implements ProviderInterface
     private $_password;
     private $_account = null;
     private $_signedIn = false;
-    private $_base = 'us';
+    private $_base = 'eu';
 
     /**
      * @return ThePlatformProvider
@@ -35,9 +35,7 @@ class ThePlatformProvider implements ProviderInterface
      * Initialize provider.
      *
      * @param array $args
-     *
      * @throws Exception
-     *
      * @return ThePlatformProvider
      */
     public function initialize($args = array())
@@ -51,11 +49,10 @@ class ThePlatformProvider implements ProviderInterface
     }
 
     /**
-     * Configuration method.
+     * Configure provider.
      *
      * @param array $args
-     *
-     * @return mixed
+     * @throws Exception
      */
     public function configure($args)
     {
