@@ -150,10 +150,10 @@ class ThePlatformProvider implements ProviderInterface
         $this->_account = urlencode($account);
     }
 
-    public function getVideoInfo($id)
+    public function getVideoInfo($videoId)
     {
         $token = $this->_auth['token'];
-        $url = 'http://data.media.'.$this->getBaseUrl().'/media/data/Media/'.$id.'?'
+        $url = 'http://data.media.'.$this->getBaseUrl().'/media/data/Media/'.$videoId.'?'
             .'schema=1.4.0&form=json&'
             .'token='.$token.'&account='.$this->_account;
 
@@ -163,13 +163,13 @@ class ThePlatformProvider implements ProviderInterface
         return $json;
     }
 
-    public function getVideosFromFeed($feedPublicId)
+    public function getVideosFromFeed($feedId)
     {
         $videos = [];
 
         $token = $this->_auth['token'];
         $url = 'http://data.feed.'.$this->getBaseUrl().'/feed/data/FeedConfig?'
-            .'byPid='.$feedPublicId.'&'
+            .'byPid='.$feedId.'&'
             .'schema=1.3.0&form=json&'
             .'token='.$token.'&account='.$this->_account;
 
@@ -188,4 +188,37 @@ class ThePlatformProvider implements ProviderInterface
 
         return $videos;
     }
+
+    public function getVideosFromAccount($data)
+    {
+        $videos = [];
+
+        $token = $this->_auth['token'];
+        $url = 'http://data.media.' . $this->getBaseUrl() . '/media/data/Media?'
+            . 'schema=1.8.0&form=json&'
+            . 'token='.$token.'&account='.$this->_account;
+
+        // set date filtering params
+        if (isset($data['startTime']) && isset($data['endTime'])) {
+            $url .= sprintf('&byAdded=%s~%s', $data['startTime'], $data['endTime']);
+        }
+
+        // set country filtering params
+        if (isset($data['country'])) {
+            $url .= sprintf('&byCustomValue={fox:countryOrigin}{%s}', strtolower($data['country']));
+        }
+
+        $response = $this->_request($url);
+        $json = json_decode($response, true);
+
+        if (($json != false) && ($json['entryCount'] > 0)) {
+            foreach ($json['entries'] as $entry) {
+                $videoId = array_reverse(explode('/', $entry['id']))[0];
+                $videos[] = $this->getVideoInfo($videoId);
+            }
+        }
+
+        return $videos;
+    }
+
 }

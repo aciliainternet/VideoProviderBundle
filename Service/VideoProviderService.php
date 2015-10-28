@@ -81,4 +81,16 @@ class VideoProviderService
     {
         return $this->provider->getVideosFromFeed($feed);
     }
+
+    /**
+     * Get video list from the account
+     *
+     * @param array $data filtering for videos
+     *
+     * @return array
+     */
+    public function getVideosFromAccount($data)
+    {
+        return $this->provider->getVideosFromAccount($data);
+    }
 }
