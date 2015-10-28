@@ -4,8 +4,8 @@ namespace Acilia\Bundle\VideoProviderBundle\Service;
 
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderInitializationException;
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderInterfaceException;
-use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderMethodNotFoundException;
 use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderNotFoundProviderException;
+use Acilia\Bundle\VideoProviderBundle\Library\Exceptions\VideoProviderConfigurationException;
 
 class VideoProviderService
 {
@@ -15,13 +15,6 @@ class VideoProviderService
      * @var ProviderInterface
      */
     private $provider;
-
-    /**
-     * Video provider credentials.
-     *
-     * @var array
-     */
-    private $credentials;
 
     /**
      * __construct.
@@ -42,27 +35,27 @@ class VideoProviderService
         }
 
         try {
-            $this->provider = call_user_func(array($provider, 'initialize'), $args);
+            $this->provider = $provider::getInstance();
+            $this->provider->initialize($args);
         } catch (\Exception $e) {
             throw new VideoProviderInitializationException('Error connecting to video provider', 1, $e);
         }
     }
 
     /**
-     * Call methods not covered by the interface.
+     * Call provider configure method.
      *
-     * @param string $method
-     * @param array  $arguments [description]
+     * @param array $args
      *
      * @return mixed
      */
-    public function call($method, $arguments)
+    public function configure($args)
     {
-        if (!method_exists($this->provider, $method)) {
-            throw new VideoProviderMethodNotFoundException('Method "'.$method.'" not found');
+        try {
+            return $this->provider->configure($args);
+        } catch (Exception $e) {
+            throw new VideoProviderConfigurationException('Error configuring video provider', 1, $e);
         }
-
-        return call_user_func_array(array($this->provider, $method), $arguments);
     }
 
     /**
