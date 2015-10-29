@@ -1,8 +1,8 @@
 <?php
-
 namespace Acilia\Bundle\VideoProviderBundle\Library\Providers;
 
 use Acilia\Bundle\VideoProviderBundle\Library\Interfaces\ProviderInterface;
+use Acilia\Bundle\VideoProviderBundle\Library\Processor\ThePlatform\DefaultProcessor;
 use Exception;
 
 class ThePlatformProvider implements ProviderInterface
@@ -64,11 +64,20 @@ class ThePlatformProvider implements ProviderInterface
      */
     public function configure($args)
     {
+        // set account for provider
         if (empty($args['account'])) {
             throw new Exception('Bad configuration arguments.', 1);
         }
-
         $this->setAccount($args['account']);
+
+        // set output processor
+        if (! isset($args['processor'])) {
+            $args['processor'] = 'default';
+        }
+
+        if ($args['processor'] == 'default') {
+            $this->_processor = new DefaultProcessor();
+        }
     }
 
     private function _request($url, $post = false, $options = array())
@@ -222,7 +231,7 @@ class ThePlatformProvider implements ProviderInterface
         if (($json != false) && ($json['entryCount'] > 0)) {
             foreach ($json['entries'] as $entry) {
                 $videoId = array_reverse(explode('/', $entry['id']))[0];
-                $videos[] = $this->getVideoInfo($videoId);
+                $videos[] = $this->_processor->processVideoInfo($this->getVideoInfo($videoId));
             }
         }
 
