@@ -83,6 +83,18 @@ class VideoProviderService
     }
 
     /**
+     * Get videos list of a feed Url given.
+     *
+     * @param string $feedUrl
+     *
+     * @return array
+     */
+    public function getVideosFromFeedUrl($feedUrl)
+    {
+        return $this->provider->getVideosFromFeedUrl($feedUrl);
+    }
+
+    /**
      * Get video list from the account
      *
      * @param array $data filtering for videos

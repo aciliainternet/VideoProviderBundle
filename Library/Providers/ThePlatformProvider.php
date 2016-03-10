@@ -206,6 +206,25 @@ class ThePlatformProvider implements ProviderInterface
         return $videos;
     }
 
+    public function getVideosFromFeedUrl($feedUrl)
+    {
+        $videos = false;
+
+        $response = $this->_request($feedUrl);
+        $json = json_decode($response, true);
+
+        if (($json != false) && ($json['entryCount'] > 0)) {
+            $videos = [
+                'entries' => $json['entries'],
+                'startIndex' => $json['startIndex'],
+                'itemsPerPage' => $json['itemsPerPage'],
+                'entryCount' => $json['entryCount'],
+            ];
+        }
+
+        return $videos;
+    }
+
     public function getVideosFromAccount($data)
     {
         $videos = [];
