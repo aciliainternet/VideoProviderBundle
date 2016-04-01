@@ -257,4 +257,20 @@ class ThePlatformProvider implements ProviderInterface
         return $videos;
     }
 
+    public function updateVideoProperty($videoId, $property, $value)
+    {
+        $token = $this->_auth['token'];
+        $url = 'http://data.media.' . $this->getBaseUrl() .'/media/data/Media/' . $videoId . '?'
+            . 'schema=1.8.0&form=json&method=put&'
+            . 'token=' . $token . '&account=' . $this->_account;
+
+        $data = array(
+            '$xmlns' => array('fox' => 'http://xml.fox.com/fields'),
+            $property => $value
+        );
+        $encodedData = json_encode($data);
+
+        $response = $this->_request($url, $encodedData);
+        return null;
+    }
 }
