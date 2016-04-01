@@ -105,4 +105,18 @@ class VideoProviderService
     {
         return $this->provider->getVideosFromAccount($data);
     }
+
+    /**
+     * Update a property with value on a video
+     *
+     * @param string $videoId
+     * @param string $property
+     * @param string $value
+     *
+     * @return array
+     */
+    public function updateVideoProperty($videoId, $property, $value)
+    {
+        return $this->provider->updateVideoProperty($videoId, $property, $value);
+    }
 }
