@@ -269,6 +269,10 @@ class ThePlatformProvider implements ProviderInterface
             . 'schema=1.8.0&form=json&method=put&'
             . 'token=' . $token . '&account=' . $this->_account;
 
+        foreach ($videoData as $k => $data) {
+            $videoData[$k]['id'] = 'http://data.media.' . $this->getBaseUrl() .'/media/data/Media/' . $videoData[$k]['id'];
+        }
+
         $data = array(
             '$xmlns' => array('fox' => 'http://xml.fox.com/fields'),
             'entries' => $videoData
