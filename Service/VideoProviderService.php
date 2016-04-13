@@ -113,10 +113,6 @@ class VideoProviderService
 
     public function updateVideosProperties($videoData)
     {
-        $_base_url = $this->provider->getBaseUrl();
-        foreach ($videoData as $k => $data) {
-            $videoData[$k]['id'] = 'http://data.media.' . $_base_url .'/media/data/Media/' . $videoData[$k]['id'];
-        }
         return $this->provider->updateVideosProperties($videoData);
     }
 }
