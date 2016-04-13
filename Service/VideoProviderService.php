@@ -105,4 +105,14 @@ class VideoProviderService
     {
         return $this->provider->getVideosFromAccount($data);
     }
+
+    /**
+     * Bulk update of a properties of a video
+     * @return boolean
+     */
+
+    public function updateVideosProperties($videoData)
+    {
+        return $this->provider->updateVideosProperties($videoData);
+    }
 }

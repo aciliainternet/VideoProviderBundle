@@ -257,4 +257,25 @@ class ThePlatformProvider implements ProviderInterface
         return $videos;
     }
 
+    /**
+     * Bulk update of a properties of a video
+     * @param $videoData is an associative array with the id of the video in the key "id", the rest of entries are couples property_to_update => value
+     * @return null
+     */
+    public function updateVideosProperties($videoData)
+    {
+        $token = $this->_auth['token'];
+        $url = 'http://data.media.' . $this->getBaseUrl() .'/media/data/Media/list?'
+            . 'schema=1.8.0&form=json&method=put&'
+            . 'token=' . $token . '&account=' . $this->_account;
+
+        $data = array(
+            '$xmlns' => array('fox' => 'http://xml.fox.com/fields'),
+            'entries' => $videoData
+        );
+        $encodedData = json_encode($data);
+
+        $response = $this->_request($url, $encodedData);
+        return true;
+    }
 }
