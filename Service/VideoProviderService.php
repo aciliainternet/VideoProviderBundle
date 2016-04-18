@@ -112,7 +112,7 @@ class VideoProviderService
      */
     public function getVideoUrl($videoId)
     {
-        return $this->provider->getVideoBaseUrl($videoId);
+        return $this->provider->getVideoUrl($videoId);
     }
 
     /**
