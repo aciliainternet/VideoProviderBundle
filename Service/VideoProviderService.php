@@ -110,7 +110,7 @@ class VideoProviderService
      * Returns the base url of the videos in the provider
      * @return string
      */
-    public function getVideoBaseUrl($videoId)
+    public function getVideoUrl($videoId)
     {
         return $this->provider->getVideoBaseUrl($videoId);
     }
