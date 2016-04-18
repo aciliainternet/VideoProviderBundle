@@ -105,4 +105,23 @@ class VideoProviderService
     {
         return $this->provider->getVideosFromAccount($data);
     }
+
+    /**
+     * Returns the base url of the videos in the provider
+     * @return string
+     */
+    public function getVideoBaseUrl($videoId)
+    {
+        return $this->provider->getVideoBaseUrl($videoId);
+    }
+
+    /**
+     * Bulk update of a properties of a video
+     * @return boolean
+     */
+
+    public function updateVideosProperties($videoData)
+    {
+        return $this->provider->updateVideosProperties($videoData);
+    }
 }

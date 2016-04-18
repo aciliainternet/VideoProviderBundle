@@ -15,4 +15,8 @@ interface ProviderInterface
     public function getVideosFromFeed($feedId);
 
     public function getVideosFromAccount($data);
+
+    public function getVideoBaseUrl($videoId);
+
+    public function updateVideosProperties($videoData);
 }
