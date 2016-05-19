@@ -213,6 +213,10 @@ class ThePlatformProvider implements ProviderInterface
         $response = $this->_request($feedUrl);
         $json = json_decode($response, true);
 
+        if (($json != false) && isset($json['isException']) && $json['isException']) {
+            return false;
+        }
+
         if (($json != false) && ($json['entryCount'] > 0)) {
             $videos = [
                 'entries' => $json['entries'],
