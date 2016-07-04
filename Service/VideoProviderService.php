@@ -62,12 +62,13 @@ class VideoProviderService
      * Get video information of a given ID.
      *
      * @param string $id
+     * @param array $extraData Extra Data for the provider
      *
      * @return array
      */
-    public function getVideoInfo($id)
+    public function getVideoInfo($id, array $extraData = [])
     {
-        return $this->provider->getVideoInfo($id);
+        return $this->provider->getVideoInfo($id, $extraData);
     }
 
     /**

@@ -10,11 +10,13 @@ interface ProviderInterface
 
     public function configure($args);
 
-    public function getVideoInfo($videoId);
+    public function getVideoInfo($videoId, array $extraData = []);
 
     public function getVideosFromFeed($feedId);
 
     public function getVideosFromAccount($data);
+
+    public function getVideosFromFeedUrl($feedUrl);
 
     public function getVideoUrl($videoId);
 

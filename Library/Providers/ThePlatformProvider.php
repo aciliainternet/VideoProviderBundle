@@ -167,12 +167,16 @@ class ThePlatformProvider implements ProviderInterface
         $this->_account = urlencode($account);
     }
 
-    public function getVideoInfo($videoId)
+    public function getVideoInfo($videoId, array $extraData = [])
     {
         $token = $this->_auth['token'];
         $url = 'http://data.media.'.$this->getBaseUrl().'/media/data/Media/'.$videoId.'?'
             .'schema=1.4.0&form=json&'
             .'token='.$token.'&account='.$this->_account;
+
+        if (isset($extraData['lang'])) {
+            $url .= '&lang=' . $extraData['lang'];
+        }
 
         $response = $this->_request($url);
         $json = json_decode($response, true);
