@@ -244,7 +244,11 @@ class ThePlatformProvider implements ProviderInterface
 
         // set date filtering params
         if (isset($data['startTime']) && isset($data['endTime'])) {
-            $url .= sprintf('&byAdded=%s~%s', $data['startTime'], $data['endTime']);
+            if (isset($data['sort']) && ($data['sort'] == 'updated')) {
+                $url .= sprintf('&byUpdated=%s~%s', $data['startTime'], $data['endTime']);
+            } else {
+                $url .= sprintf('&byAdded=%s~%s', $data['startTime'], $data['endTime']);
+            }
         }
 
         // set country filtering params
