@@ -55,6 +55,7 @@ class DefaultProcessor implements ProcessorInterface
 
         $videoInfoProcessed = [
             'result' => $result,
+            'guid' => $videoInfo['guid'],
             'video_id' => $videoId,
             'stream_reference' => $streamReference,
             'stream_duration'  => round($duration),
