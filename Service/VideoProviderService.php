@@ -35,7 +35,7 @@ class VideoProviderService
         }
 
         try {
-            $this->provider = $provider::getInstance();
+            $this->provider = new $provider();
             $this->provider->initialize($args);
         } catch (Exception $e) {
             throw new VideoProviderInitializationException('Error connecting to video provider', 1, $e);
@@ -55,6 +55,20 @@ class VideoProviderService
             return $this->provider->configure($args);
         } catch (Exception $e) {
             throw new VideoProviderConfigurationException('Error configuring video provider', 1, $e);
+        }
+    }
+
+    /**
+     * Call provider signout method.
+     *
+     * @throws VideoProviderConfigurationException
+     */
+    public function signout()
+    {
+        try {
+            $this->provider->signout();
+        } catch (Exception $e) {
+            throw new VideoProviderConfigurationException('Error signing out video provider', 1, $e);
         }
     }
 

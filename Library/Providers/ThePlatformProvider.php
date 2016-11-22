@@ -10,34 +10,12 @@ class ThePlatformProvider implements ProviderInterface
     const BASE_US = 'theplatform.com';
     const BASE_EU = 'theplatform.eu';
 
-    private static $_instance = null;
-
     private $_auth = null;
     private $_user;
     private $_password;
     private $_account = null;
     private $_signedIn = false;
     private $_base = 'eu';
-
-    /**
-     * @return ThePlatformProvider
-     */
-    public static function getInstance()
-    {
-        if (self::$_instance == null) {
-            self::$_instance = new self();
-        }
-
-        return self::$_instance;
-    }
-
-    /**
-     * Destruct provider (logout if needed)
-     */
-    public function __destruct()
-    {
-        $this->signOut();
-    }
 
     /**
      * Initialize provider.
@@ -158,7 +136,7 @@ class ThePlatformProvider implements ProviderInterface
 
             $encodedData = '{ "signOut": { "token": "'.$this->_auth['token'].'" } }';
 
-            $response = $this->_request($url, $encodedData);
+            $this->_request($url, $encodedData);
         }
     }
 
@@ -271,6 +249,7 @@ class ThePlatformProvider implements ProviderInterface
 
     /**
      * Returns the url of the videos in the provider
+     *
      * @return string
      */
     public function getVideoUrl($videoId)
@@ -280,7 +259,8 @@ class ThePlatformProvider implements ProviderInterface
 
     /**
      * Bulk update of a properties of a video
-     * @param $videoData is an associative array with the id of the video in the key "id", the rest of entries are couples property_to_update => value
+     *
+     * @param $videoData array is an associative array with the id of the video in the key "id", the rest of entries are couples property_to_update => value
      * @return null
      */
     public function updateVideosProperties($videoData)
@@ -290,13 +270,24 @@ class ThePlatformProvider implements ProviderInterface
             . 'schema=1.8.0&form=json&method=put&'
             . 'token=' . $token . '&account=' . $this->_account;
 
-        $data = array(
-            '$xmlns' => array('fox' => 'http://xml.fox.com/fields'),
+        $data = [
+            '$xmlns' => [
+                'dcterms' => 'http://purl.org/dc/terms/',
+                'media'=> 'http://search.yahoo.com/mrss/',
+                'pl' => 'http://xml.theplatform.com/data/object',
+                'pla' => 'http://xml.theplatform.com/data/object/admin',
+                'plmedia' => 'http://xml.theplatform.com/media/data/Media',
+                'plfile' => 'http://xml.theplatform.com/media/data/MediaFile',
+                'plrelease' => 'http://xml.theplatform.com/media/data/Release',
+                'fox' => 'http://xml.fox.com/fields'
+            ],
+            'entryCount' => count($videoData),
             'entries' => $videoData
-        );
-        $encodedData = json_encode($data);
+        ];
 
+        $encodedData = json_encode($data);
         $response = $this->_request($url, $encodedData);
-        return true;
+
+        return null;
     }
 }
