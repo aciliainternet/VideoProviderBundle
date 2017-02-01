@@ -86,6 +86,19 @@ class VideoProviderService
     }
 
     /**
+     * Get video information of a given ID, but Processed
+     *
+     * @param string $id
+     * @param array $extraData Extra Data for the provider
+     *
+     * @return array
+     */
+    public function getVideoInfoProcessed($id, array $extraData = [])
+    {
+        return $this->provider->getVideoInfoProcessed($id, $extraData);
+    }
+
+    /**
      * Get videos list of a feed ID given.
      *
      * @param string $feed
@@ -138,5 +151,10 @@ class VideoProviderService
     public function updateVideosProperties($videoData)
     {
         return $this->provider->updateVideosProperties($videoData);
+    }
+
+    public function getProvider()
+    {
+        return $this->provider;
     }
 }

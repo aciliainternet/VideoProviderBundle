@@ -227,6 +227,8 @@ class ThePlatformProvider implements ProviderInterface
             } else {
                 $url .= sprintf('&byAdded=%s~%s', $data['startTime'], $data['endTime']);
             }
+        } elseif (isset($data['expiredRange'])) {
+            $url .= sprintf('&byExpirationDate=%s~%s', $data['expiredRange']['from'], $data['expiredRange']['to']);
         }
 
         // set country filtering params
@@ -245,6 +247,11 @@ class ThePlatformProvider implements ProviderInterface
         }
 
         return $videos;
+    }
+
+    public function getVideoInfoProcessed($videoId, array $extraData = [])
+    {
+        return $this->_processor->processVideoInfo($this->getVideoInfo($videoId, $extraData));
     }
 
     /**
@@ -289,5 +296,49 @@ class ThePlatformProvider implements ProviderInterface
         $response = $this->_request($url, $encodedData);
 
         return null;
+    }
+
+    public function getMediaFiles($videoId)
+    {
+        $token = $this->_auth['token'];
+        $url = 'http://data.media.' . $this->getBaseUrl() .'/media/data/MediaFile/list?'
+             . 'schema=1.0&form=json&byMediaId=' . $videoId . '&'
+             . 'token=' . $token . '&account=' . $this->_account;
+
+        $response = $this->_request($url);
+        return json_decode($response, true);
+    }
+
+    public function deleteMediaFileById($mediaFileId, $force = false)
+    {
+        $token = $this->_auth['token'];
+        $url = 'http://fms.' . $this->getBaseUrl() .'/web/FileManagement/deleteFile?'
+             . 'schema=1.5&form=json&_fileId=' . $mediaFileId . '&' . ($force === true ? 'deletePhysicalFileFirst=true&' : '')
+             . 'token=' . $token . '&account=' . $this->_account;
+
+        $response = $this->_request($url);
+        return json_decode($response, true);
+    }
+
+    public function deleteMediaById($mediaId)
+    {
+        $token = $this->_auth['token'];
+        $url = 'http://data.media.' . $this->getBaseUrl() .'/media/data/Media/' . $mediaId . '?'
+            . 'schema=1.4.0&form=json&'
+            . 'token=' . $token . '&account=' . $this->_account;
+
+        $response = $this->_request($url, false, [CURLOPT_CUSTOMREQUEST => 'DELETE']);
+        return json_decode($response, true);
+    }
+
+    public function getTask($taskId)
+    {
+        $token = $this->_auth['token'];
+        $url = 'http://data.task.' . $this->getBaseUrl() . '/task/data/Task/' . $taskId
+             . '?schema=1.5&form=json&'
+             . 'token=' . $token . '&account=' . $this->_account;
+
+        $response = $this->_request($url);
+        return json_decode($response, true);
     }
 }

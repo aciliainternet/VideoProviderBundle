@@ -10,6 +10,8 @@ interface ProviderInterface
 
     public function getVideoInfo($videoId, array $extraData = []);
 
+    public function getVideoInfoProcessed($videoId, array $extraData = []);
+
     public function getVideosFromFeed($feedId);
 
     public function getVideosFromAccount($data);

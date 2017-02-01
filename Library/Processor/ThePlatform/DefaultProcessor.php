@@ -2,7 +2,7 @@
 namespace Acilia\Bundle\VideoProviderBundle\Library\Processor\ThePlatform;
 
 use Acilia\Bundle\VideoProviderBundle\Library\Interfaces\ProcessorInterface;
-use Exception;
+use DateTime;
 
 class DefaultProcessor implements ProcessorInterface
 {
@@ -45,6 +45,12 @@ class DefaultProcessor implements ProcessorInterface
             }
         }
 
+        $expired = null;
+        if (isset($videoInfo['media$expirationDate'])) {
+            $expired = $videoInfo['media$expirationDate'] / 1000;
+            $expired = new DateTime(date('Y-m-d H:i:s', $expired));
+        }
+
         // get custom data
         $customCountry = isset($videoInfo['fox$countryOrigin']) ? $videoInfo['fox$countryOrigin']: '';
         $customChannel = isset($videoInfo['fox$channel']) ? $videoInfo['fox$channel']: '';
@@ -53,8 +59,12 @@ class DefaultProcessor implements ProcessorInterface
         $customProgramName = isset($videoInfo['fox$programName']) ? $videoInfo['fox$programName']: '';
         $customProgramId = isset($videoInfo['fox$programmeId']) ? $videoInfo['fox$programmeId']: '';
 
+        $customOriginalShowTitle = isset($videoInfo['fox$originalShowTitle']) ? $videoInfo['fox$originalShowTitle']: null;
+        $customOriginalEpisodeTitle = isset($videoInfo['fox$originalEpisodeTitle']) ? $videoInfo['fox$originalEpisodeTitle']: null;
+
         $videoInfoProcessed = [
             'result' => $result,
+            'mpx_uri_id' => $videoInfo['id'],
             'guid' => $videoInfo['guid'],
             'video_id' => $videoId,
             'stream_reference' => $streamReference,
@@ -67,7 +77,10 @@ class DefaultProcessor implements ProcessorInterface
             'customEpisodeNumber' => $customEpisodeNumber,
             'customEpisodeSeasonNumber' => $customEpisodeSeasonNumber,
             'customProgramName' => $customProgramName,
-            'customProgramId' => $customProgramId
+            'customProgramId' => $customProgramId,
+            'customOriginalShowTitle' => $customOriginalShowTitle,
+            'customOriginalEpisodeTitle' => $customOriginalEpisodeTitle,
+            'expired' => $expired
         ];
 
         return $videoInfoProcessed;
