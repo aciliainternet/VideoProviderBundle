@@ -31,7 +31,6 @@ class ThePlatformProvider implements ProviderInterface
         }
 
         $this->setCredentials($args['user'], $args['password']);
-        $this->authenticate();
     }
 
     /**
@@ -113,6 +112,10 @@ class ThePlatformProvider implements ProviderInterface
 
     public function authenticate()
     {
+        if ($this->_signedIn) {
+            return;
+        }
+
         $url = 'https://identity.auth.theplatform.com/idm/web/Authentication/signIn?schema=1.0&form=json&_duration=8640000&_idleTimeout=360000';
         $options = array(
             CURLOPT_USERPWD => 'mpx/'.$this->_user.':'.$this->_password,
@@ -137,6 +140,7 @@ class ThePlatformProvider implements ProviderInterface
             $encodedData = '{ "signOut": { "token": "'.$this->_auth['token'].'" } }';
 
             $this->_request($url, $encodedData);
+            $this->_signedIn = false;
         }
     }
 
@@ -147,6 +151,7 @@ class ThePlatformProvider implements ProviderInterface
 
     public function getVideoInfo($videoId, array $extraData = [])
     {
+        $this->authenticate();
         $token = $this->_auth['token'];
         $url = 'http://data.media.'.$this->getBaseUrl().'/media/data/Media/'.$videoId.'?'
             .'schema=1.4.0&form=json&'
@@ -164,6 +169,7 @@ class ThePlatformProvider implements ProviderInterface
 
     public function getVideosFromFeed($feedId)
     {
+        $this->authenticate();
         $videos = [];
 
         $token = $this->_auth['token'];
@@ -213,6 +219,7 @@ class ThePlatformProvider implements ProviderInterface
 
     public function getVideosFromAccount($data)
     {
+        $this->authenticate();
         $videos = [];
 
         $token = $this->_auth['token'];
@@ -272,6 +279,7 @@ class ThePlatformProvider implements ProviderInterface
      */
     public function updateVideosProperties($videoData)
     {
+        $this->authenticate();
         $token = $this->_auth['token'];
         $url = 'http://data.media.' . $this->getBaseUrl() .'/media/data/Media/list?'
             . 'schema=1.8.0&form=json&method=put&'
@@ -300,6 +308,7 @@ class ThePlatformProvider implements ProviderInterface
 
     public function getMediaFiles($videoId)
     {
+        $this->authenticate();
         $token = $this->_auth['token'];
         $url = 'http://data.media.' . $this->getBaseUrl() .'/media/data/MediaFile/list?'
              . 'schema=1.0&form=json&byMediaId=' . $videoId . '&'
@@ -311,6 +320,7 @@ class ThePlatformProvider implements ProviderInterface
 
     public function deleteMediaFileById($mediaFileId, $force = false)
     {
+        $this->authenticate();
         $token = $this->_auth['token'];
         $url = 'http://fms.' . $this->getBaseUrl() .'/web/FileManagement/deleteFile?'
              . 'schema=1.5&form=json&_fileId=' . $mediaFileId . '&' . ($force === true ? 'deletePhysicalFileFirst=true&' : '')
@@ -322,6 +332,7 @@ class ThePlatformProvider implements ProviderInterface
 
     public function deleteMediaById($mediaId)
     {
+        $this->authenticate();
         $token = $this->_auth['token'];
         $url = 'http://data.media.' . $this->getBaseUrl() .'/media/data/Media/' . $mediaId . '?'
             . 'schema=1.4.0&form=json&'
@@ -333,6 +344,7 @@ class ThePlatformProvider implements ProviderInterface
 
     public function getTask($taskId)
     {
+        $this->authenticate();
         $token = $this->_auth['token'];
         $url = 'http://data.task.' . $this->getBaseUrl() . '/task/data/Task/' . $taskId
              . '?schema=1.5&form=json&'
