@@ -5,5 +5,5 @@ services:
     acilia.video_provider:
         class: Acilia\Bundle\VideoProviderBundle\Service\VideoProviderService
         arguments:
-            - %video_provider_bundle.provider%
-            - %video_provider_bundle.provider_init_args%
+            - "%video_provider_bundle.provider%"
+            - "%video_provider_bundle.provider_init_args%"
